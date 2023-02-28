@@ -71,7 +71,34 @@ def read_testcases(wb,suite_name):
             cases_info[case_name] = [lines]
         else:
             cases_info[case_name].append(lines)
-            return cases_info
+    return cases_info
+
+
+# 整合所有要执行的测试用例数据，将其转成pytest参数化需要的数据结构格式
+def get_all_testcases(wb):
+    """
+    整合后的数据结构是
+    [
+    ['新增客户接口测试集合','新增客户正确',[[],[]]],
+    ['新增客户接口测试集合','新增客户失败-用户名为空',[[],[]]],
+    ['新增客户接口测试集合','新增客户失败-手机号格式不正确',[[],[]]],
+    ['新建产品接口测试集合','新建产品正确',[[],[]]],
+    ['新建产品接口测试集合','新建产品失败-产品编码重复',[[],[]]],
+    ]
+    # :param wb:
+    # :return:
+    """
+    test_data = [] # 用来存储所有测试数据
+    # 获取所有要执行的测试集合名称
+    cases_suite_name = get_casesuitename(wb)
+    for suite_name in cases_suite_name:
+        # 遍历读取每个要执行的测试集合sheet工作表中的测试用例数据
+        cur_cases_info = read_testcases(wb, suite_name) # 是个字典
+        for key, value in cur_cases_info.items():
+            # key实际上就是测试用例名称，value实际上测试用例多行数据信息
+            case_info = [suite_name,key,value]
+            test_data.append(case_info)
+    return test_data
 
 
 if __name__ == '__main__':
@@ -79,4 +106,5 @@ if __name__ == '__main__':
     # print(get_variable(wb))
     # print(get_api_default_params(wb))
     # print(get_casesuitename(wb))
-    print(read_testcases(wb,'新增客户接口测试集合'))
+    # print(read_testcases(wb,'新增客户接口测试集合'))
+    print(get_all_testcases(wb))
