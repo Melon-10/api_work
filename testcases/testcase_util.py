@@ -97,6 +97,7 @@ def get_all_testcases(wb):
         for key, value in cur_cases_info.items():
             # key实际上就是测试用例名称，value实际上测试用例多行数据信息
             case_info = [suite_name,key,value]
+            print(case_info)
             test_data.append(case_info)
     return test_data
 
